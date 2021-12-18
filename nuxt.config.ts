@@ -45,6 +45,21 @@ const config: NuxtConfig = {
     '@nuxtjs/axios',
     '@nuxtjs/firebase'
   ],
+  firebase: {
+    config: {
+      apiKey: 'AIzaSyD56eslK9zTw9ORBUzqjp2zHV7yf4xd3BQ',
+      authDomain: 'baby-cycle-a4693.firebaseapp.com',
+      projectId: 'baby-cycle-a4693',
+      storageBucket: 'baby-cycle-a4693.appspot.com',
+      messagingSenderId: '419178050946',
+      appId: '1:419178050946:web:e71368a3684b09fd668b9b',
+      measurementId: 'G-B2VW9YSTF2'
+    },
+    services: {
+      auth: true,
+      firestore: true
+    }
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
