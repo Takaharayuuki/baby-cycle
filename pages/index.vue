@@ -1,11 +1,47 @@
 <template>
   <div>
-    <h1>Nuxt.js(CompositionAPI)+TypeScriptでFirebaseと連携したい！</h1>
-    <h2>↓googleでログイン↓</h2>
-    <button @click="googleLogin">ログイン</button>
-    <hr />
-    <input v-model="memo.text" type="text" />
-    <button @click="addMemo">追加</button>
+    <Navbar />
+    <b-container class="pt-5 mx-auto" style="max-width: 1200px" fluid>
+      <h2 class="p-1">オムツ記録（仮）</h2>
+      <b-row>
+        <b-col sm="1">
+          <label for="date">日付</label>
+        </b-col>
+        <b-col sm="3">
+          <b-form-input id="date" type="date" />
+        </b-col>
+      </b-row>
+      <b-row class="my-1">
+        <b-col sm="1">
+          <label for="time">時間</label>
+        </b-col>
+        <b-col sm="3">
+          <b-form-input id="time" type="time" />
+        </b-col>
+        <b-col sm="1">
+          <label for="food_type">食事</label>
+        </b-col>
+        <b-col sm="3">
+          <b-form-select size="sm" id="food_type" v-model="memo.food_type" :options="foodOptions" />
+        </b-col>
+      </b-row>
+      <b-row class="my-1">
+        <b-col sm="1">
+          <label for="excrement">オムツ</label>
+        </b-col>
+        <b-col sm="3">
+          <b-form-select size="sm" id="excrement" v-model="memo.excrement" :options="excrementOptions" />
+        </b-col>
+        <b-col sm="1">
+          <label for="milk">ミルク量</label>
+        </b-col>
+        <b-col sm="3">
+          <b-form-input id="milk" type="text" />
+        </b-col>
+      </b-row>
+      <b-button @click="addMemo" variant="primary">メモを追加する</b-button>
+      <Table />
+    </b-container>
   </div>
 </template>
 
@@ -14,35 +50,59 @@ import { defineComponent, reactive } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup(_, { root }) {
-    /**
-     * ログイン機能
-     */
-    // eslint-disable-next-line require-await
-    const googleLogin = async () => {
-      try {
-        const provider = new root.$fireModule.auth.GoogleAuthProvider()
-        root.$fire.auth.signInWithRedirect(provider)
-      } catch (e) {
-        console.error(e)
-      }
-    }
-
     const memo = reactive({
-      text: null
+      date: null,
+      time: null,
+      food_type: null,
+      excrement: null,
+      milk: null
     })
+
+    const foodOptions = reactive([
+      {
+        value: '母乳',
+        text: '母乳'
+      },
+      {
+        value: 'ミルク',
+        text: 'ミルク'
+      }
+    ])
+    const excrementOptions = reactive([
+      {
+        value: 'なし',
+        text: 'なし'
+      },
+      {
+        value: '大',
+        text: '大'
+      },
+      {
+        value: '小',
+        text: '小'
+      }
+    ])
 
     const addMemo = async () => {
       try {
         await root.$fire.firestore.collection('memos').add({
-          text: memo.text
+          date: memo.date,
+          time: memo.time,
+          food_type: memo.food_type,
+          excrement: memo.excrement,
+          milk: memo.milk
         })
-        memo.text = null
+        memo.date = null
+        memo.time = null
+        memo.food_type = null
+        memo.excrement = null
+        memo.milk = null
       } catch (e) {
         console.error(e)
       }
     }
 
-    return { googleLogin, memo, addMemo }
+    return { memo, addMemo, foodOptions, excrementOptions }
   }
 })
 </script>
